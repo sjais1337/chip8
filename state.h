@@ -2,6 +2,7 @@
 #define STATE_H
 
 #include <stdint.h>
+#include <stdbool.h>
 
 #define HEIGHT 32
 #define WIDTH 64
@@ -20,9 +21,10 @@ typedef struct{
     uint8_t st;           // sound timer
 
     uint8_t display[HEIGHT * WIDTH];
-    uint8_t keypad[16];
+    bool keypad[16];
 } state_;
 
 void init_chip(state_ *state);
+void state_update_keypad(state_ *state, char key, bool pressed);
 
 #endif 

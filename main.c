@@ -2,6 +2,22 @@
 #include <stdlib.h>
 #include "state.h"
 #include "parser.h"
+#include <termios.h>
+#include <unistd.h>
+
+void enable_raw_mode(){
+    struct termios info;
+    tcgetattr(STDIN_FILENO, &info);
+    info.c_lflag &= ~(ICANON | ECHO);
+    tcsetattr(STDIN_FILENO, TCSANOW, &info);
+}
+
+void disable_raw_mode(){
+    struct termios info;
+    tcgetattr(STDIN_FILENO, &info);
+    info.c_lflag |= (ICANON | ECHO);
+    tcsetattr(STDIN_FILENO, TCSANOW, &info);
+}
 
 int main(int argc, char*argv[]){
     if(argc != 2){
@@ -11,7 +27,7 @@ int main(int argc, char*argv[]){
 
     state_ state;
     init_chip(&state);
-    
+   
     char* filename = argv[1];
     FILE *fp;
     fp = fopen(filename, "rb");
@@ -24,10 +40,18 @@ int main(int argc, char*argv[]){
     size_t size = fread(&state.memory[0x200], 1, MAX_ROM_SIZE, fp);
     fclose(fp);
 
+    enable_raw_mode();
+
     uint16_t opcode = get_opcode(&state);
 
-    printf("First opcode: %04X\n", opcode);
 
-    // Taking as a gaurantee that binary will have even number of bytes
+    // Keypad input only matters when the program asks for it.
+
+    char key;
+    while((key = getchar()) != 'L'){
+        state_update_keypad(&state, key, true);
+    }
+
+    disable_raw_mode();
     return 0;
 }
