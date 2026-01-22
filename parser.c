@@ -155,6 +155,44 @@ void inst_clear(state_ *state){
     memset(state->display, 0, sizeof(state->display));
 }
 
+void inst_get_delay(state_ *state, uint8_t x){
+    state->V[x] = state->dt;
+}
+
+void inst_set_delay(state_ *state, uint8_t x){
+    state->dt = state->V[x];
+}
+
+void inst_set_sound(state_ *state, uint8_t x){
+    state->st = state->V[x];
+}
+
+void inst_add_i(state_ *state, uint8_t x){
+    state->I += state->V[x];
+}
+
+void inst_font_char(state_ *state, uint8_t x){
+    state->I = state->V[x]*5;
+}
+
+void inst_bcd(state_ *state, uint8_t x) {
+    state->memory[state->I] = state->V[x] / 100;
+    state->memory[state->I + 1] = (state->V[x] / 10) % 10;
+    state->memory[state->I + 2] = state->V[x] % 10;
+}
+
+void inst_store_regs(state_ *state, uint8_t x) {
+    for(int i =0; i <= x; i++){
+        state->memory[state->I +i] = state->V[i];
+    }
+}
+
+void inst_load_regs(state_ *state, uint8_t x) {
+    for(int i =0; i <= x; i++){
+        state->V[i] = state->memory[state->I +i];
+    }
+}
+
 
 void parse_opcode(uint16_t opcode, state_* state){
     uint16_t nnn = opcode & 0x0FFF;
@@ -199,6 +237,18 @@ void parse_opcode(uint16_t opcode, state_* state){
             switch(opcode & 0x00FF){
                 case 0x9E: inst_skip_pressed(state, x); break;
                 case 0xA1: inst_skip_npressed(state, x); break;
+            }
+            break;
+        case 0xF000:
+            switch(opcode & 0x00FF){
+                case 0x07: inst_get_delay(state, x); break;
+                case 0x15: inst_set_delay(state, x); break;
+                case 0x18: inst_set_sound(state, x); break;
+                case 0x1E: inst_add_i(state, x); break;
+                case 0x29: inst_font_char(state, x); break;
+                case 0x33: inst_bcd(state, x); break;
+                case 0x55: inst_store_regs(state, x); break;
+                case 0x65: inst_load_regs(state, x); break;
             }
             break;
         default: break; 
