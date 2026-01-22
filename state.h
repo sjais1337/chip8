@@ -26,5 +26,6 @@ typedef struct{
 
 void init_chip(state_ *state);
 void state_update_keypad(state_ *state, char key, bool pressed);
+uint8_t map_key_to_chip8(char key);
 
 #endif 

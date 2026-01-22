@@ -52,20 +52,20 @@ uint8_t map_key_to_chip8(char key){
         case '3': mapped = 0x3; break;
         case '4': mapped = 0xC; break;
         
-        case 'Q': mapped = 0x4; break;
-        case 'W': mapped = 0x5; break;
-        case 'E': mapped = 0x6; break;
-        case 'R': mapped = 0xD; break;
+        case 'q': case 'Q': mapped = 0x4; break;
+        case 'w': case 'W': mapped = 0x5; break;
+        case 'e': case 'E': mapped = 0x6; break;
+        case 'r': case 'R': mapped = 0xD; break;
 
-        case 'A': mapped = 0x7; break;
-        case 'S': mapped = 0x8; break;
-        case 'D': mapped = 0x9; break;
-        case 'F': mapped = 0xE; break;
+        case 'a': case 'A': mapped = 0x7; break;
+        case 's': case 'S': mapped = 0x8; break;
+        case 'd': case 'D': mapped = 0x9; break;
+        case 'f': case 'F': mapped = 0xE; break;
 
-        case 'Z': mapped = 0xA; break;
-        case 'X': mapped = 0x0; break;
-        case 'C': mapped = 0xB; break;
-        case 'V': mapped = 0xF; break;
+        case 'z': case 'Z': mapped = 0xA; break;
+        case 'x': case 'X': mapped = 0x0; break;
+        case 'c': case 'C': mapped = 0xB; break;
+        case 'v': case 'V': mapped = 0xF; break;
         default: mapped = 255; break;
     }
 
@@ -84,8 +84,5 @@ void state_update_keypad(state_ *state, char key, bool pressed){
 
     if(mapped != 255) { 
         state->keypad[mapped] = pressed;
-        // printf("%i Pressed!\n", mapped);
-        print_keypad_state(state->keypad);
     }
-
 }
