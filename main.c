@@ -61,7 +61,7 @@ int read_key(){
 static char frame_buffer[16384];
 static int key_hold_frames[16] = {0};
 
-#define KEY_HOLD_DURATION 120 
+#define KEY_HOLD_DURATION 60 
 
 void update_keypad_hold(state_ *state) {
     for(int i = 0; i < 16; i++){
